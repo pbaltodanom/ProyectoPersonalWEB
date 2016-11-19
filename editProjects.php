@@ -2,11 +2,7 @@
     include_once ('session.php');
     include_once ('connection_db.php');
 
-    //echo "Welcome ". $_SESSION['login_user'];
-
     $connection = db_connect();
-
-      //  $sql = "INSERT INTO `course`(`name_course`, `credits`, `day`, `schedule`, `id_department`) VALUES ('$idDepartment','$course','$credits', '$day', '$schedule')";
 
     if (isset($_POST['logout'])) {
     	session_start();
@@ -14,49 +10,6 @@
 
     	header('location: login.php');
     }
-
-    if(isset($_POST["submit"])) {  
-        $cont = 0;
-        $projectTechnologies = "";
-        foreach($_POST["language"] as $language) {
-            $cont = $cont + 1;
-            $projectTechnologies .= $cont." ";
-        }
-
-        $courseID = $_POST['idCourse'];
-        $projectName = $_POST['pname'];
-        $projectSummary = $_POST['psummary'];
-        $projectDescription = $_POST['pdesc'];
-        $projectType = $_POST['ptype'];
-        //$projectTechnologies = $_POST['courseSelection']
-        $projectDuration = $_POST['pduration'];
-        $projectRoles = $_POST['prole'];
-
-        $sql = "INSERT INTO `project`(`name_project`, `summary_project`, `description_project`, `id_course`, `id_type`, `id_technologies`, `duration_project`, `role_project`) VALUES ('$projectName', '$projectSummary', '$projectDescription', '$courseID', '$projectType', '$projectTechnologies','$projectDuration', '$projectRoles')";        
-        if ($connection->query($sql) === TRUE) {
-            echo "<div class='success'>Nuevo proyecto agregado</div>";
-        } else {
-            echo "Error: " . $sql . "<br>" . $connection->error;
-        }
-    }
-
-    if(isset($_POST["course-submit"])) {  
-        $departmentID = $_POST['idDepartment'];
-        $courseName = $_POST['course'];
-        $courseCredits = $_POST['credits'];
-        $courseDay = $_POST['day'];
-        $courseSchedule = $_POST['schedule'];
-        $courseProfessor = $_POST['idProfessor'];
-        $courseDepartment = $_POST['idDepartment'];
-
-        $sql = "INSERT INTO `course`(`id_course`, `name_course`, `credits`, `day`, `schedule`, `id_professor`, `id_department`) VALUES  ('$departmentID','$courseName','$courseCredits','$courseDay','$courseSchedule','$courseProfessor', '$courseDepartment')";
-        if ($connection->query($sql) === TRUE) {
-            echo "<div class='success'>Nuevo curso creado</div>";
-        } else {
-            echo "Error: " . $sql . "<br>" . $connection->error;
-        }
-    }
-
 ?>
 
 <!DOCTYPE html>
@@ -95,102 +48,84 @@
     <div class="boxed">
         <div class="transbox">
             <font color="white"><h1>Portafolio de proyectos</h1></font>
-            <font color="white"><h3>Ingreso de nuevos proyectos</h3></font>
+            <font color="white"><h3>Actualizar proyectos</h3></font>
 
             <br><br>
 
-            <form name="NewProjectForm" action="mainPage.php" method="post">
-                <div id="mainselection">
-                    <select id="departmentSelection" name="idDepartment" onchange="validateCourse(); getId(this.value)">
-                    <option value="" selected="true" disabled="disabled">Elija una escuela</option> 
-                        <?php 
-                            $sql = "SELECT id_department, name_department FROM department";
-                            $result = mysqli_query($connection,$sql);
-                            while($row = mysqli_fetch_array($result, MYSQL_ASSOC)) {                                                 
-                               echo "<option value='".$row['id_department']."'>".$row['name_department']."</option>";
-                            }
-                        ?>
-                    </select>
-                </div>
-                <br><br><br>
-                <div id="mainselection">
-                    <select id="courseSelection" name="idCourse" onchange="validate(); showhide();">
-                    <option value="" selected="true" disabled="disabled">Elija un curso</option> 
-                    <option value="course4" onclick="showhide();">Nuevo Curso</a>
-                    </select>
-                </div>
-                <br><br>
-                <script type="text/javascript" src="js/validations.js"></script>
-                    
-                </script>
-                <div id="showform" style="display:none">
-                    <br>
-                    <font color="white">Nombre: </font> <br>
-                    <input type="text" name="course" placeholder="Nombre del curso"> <br>
-                    <font color="white">Créditos: </font> <br>
-                    <input type="number" name="credits" placeholder="Número de créditos"> <br>
-                    <font color="white">Día: </font> <br>
-                    <select name="day">
-                        <option value="lunes">Lunes</option>
-                        <option value="martes">Martes</option>
-                        <option value="miercoles">Miércoles</option>
-                        <option value="jueves">Jueves</option>
-                        <option value="viernes">Viernes</option>
-                        <option value="sabado">Sábado</option>
-                    </select>
-                    <br>
-                    <font color="white">Horario: </font> <br>
-                    <input type="text" name="schedule" placeholder="e.g 7:30-9:20"> <br><br>
-                    <font color="white">Profesor: </font> <br>
-                    <select id="professorSelection" name="idProfessor">
-                    <option value="" selected="true" disabled="disabled">Elija un profesor</option> 
-                        <?php 
-                            $sql = "SELECT id_professor, name_professor FROM professor";
-                            $result = mysqli_query($connection,$sql);
-                            while($row = mysqli_fetch_array($result, MYSQL_ASSOC)) {                                                 
-                               echo "<option value='".$row['id_professor']."'>".$row['name_professor']."</option>";
-                            }
-                        ?>
-                    </select>
-                    <input type="submit" name="course-submit" value="Agregar Curso" />
-                    <br><br>
-                </div>
-                <br><br>
-                <font color="white">Nombre del proyecto:  </font>
-                <input type="text" name="pname" placeholder="Proyecto1"> <br><br>
+            <?php
 
-                <font color="white">Resumen del proyecto:</font> <br><br>
-                <textarea rows="4" name="psummary" cols="50" placeholder="Resumen..."></textarea> <br><br>
+            $sql = "SELECT * FROM project";
+            $result = mysqli_query($connection, $sql);
 
-                <font color="white">Descripción del proyecto:</font> <br><br>
-                <textarea rows="4" name="pdesc"cols="50" placeholder="Descripción..."></textarea> <br><br>
+            if (mysqli_num_rows($result) > 0) {
+                echo '<table cellpadding="0" cellspacing="0" class="db-table">';
+                echo '<tr><th>ID</th><th>NOMBRE</th><th>RESUMEN</th><th>DESCRIPCIÓN</th><th>CURSO</th><th>TIPO DE PROYECTO</th><th>TECNOLOGÍAS USADAS</th><th>DURACIÓN</th><th>TAREAS / ROLES</th></tr>';
+                // output data of each row
+                while($row = mysqli_fetch_assoc($result)) {
+                    echo '<tr>';
+                    foreach($row as $key=>$value) {
+                        if ($key == "id_course") {
+                            getCourse($connection, $value);
+                        } else if ($key == "id_type") {
+                            getTypeProject($connection, $value);
+                        } else if ($key == "id_technologies") {
+                            getTechnologiesProject($connection, $value);
+                        } else {
+                            echo '<td>',$value,'</td>';
+                        }
+                    }
+                    echo '</tr>';
+                }
+            } else {
+                echo "0 results";
+            }
 
-                <font color="white"><h2>Tipo de proyecto</h2></font>
-                <div class="radiobuttons">
-                    <label><input type="radio"  name="ptype"  value="1" checked/> <span>Investigación</span></label>
-                    <label><input type="radio" name="ptype" value="2"/> <span>Proyecto Programado</span></label>
-                    <label><input type="radio" name="ptype" value="3" /> <span>Grupal</span></label>
-                    <label><input type="radio" name="ptype" value="4"/> <span>Individual</span></label>
-                </div>                
-                <br><br><br><br>
+            function getCourse($connection, $value) {
+                $sql = "SELECT name_course FROM `course` WHERE `id_course` = $value";                
+                $result = mysqli_query($connection, $sql);
 
-                <font color="white"><h3>Tecnologías usadas</h3></font>
-                <input type="checkbox" name="language[]" value="PHP"><font color="white">PHP</font><br>
-                <input type="checkbox" name="language[]" value="JQuery"><font color="white">JQuery</font><br>
-                <input type="checkbox" name="language[]" value="RubyRails"><font color="white">Ruby & Rails</font><br>
-                <input type="checkbox" name="language[]" value="HTML5"><font color="white">HTML5</font><br>
-                <input type="checkbox" name="language[]" value="MYSQL"><font color="white">MySQL</font><br><br>
+                while($row = mysqli_fetch_assoc($result)) {
+                    if (mysqli_num_rows($result) > 0) {
+                        foreach($row as $key=>$value) {
+                            echo '<td>',$value,'</td>';
+                        }
+                    }
+                }
+            }
 
-                <font color="white">Duración (en semanas) </font>
-                <input type="text" name="pduration"> <br><br>
+            function getTypeProject($connection, $value) {                
+                $sql = "SELECT `name_type` FROM `typeproject` WHERE `id_type` = $value";                
+                $result = mysqli_query($connection, $sql);
 
-                <font color="white">Tareas / Roles </font>
-                <input type="text" name="prole"> <br><br><br>
+                while($row = mysqli_fetch_assoc($result)) {
+                    if (mysqli_num_rows($result) > 0) {
+                        foreach($row as $key=>$value) {
+                            echo '<td>',$value,'</td>';
+                        }
+                    }
+                }
+            }
 
-                <div class="myButton">
-                    <input type="submit" name="submit" style="background-color:transparent;" value="Añadir nuevo proyecto">
-                </div> <br><br><br><br>
-            </form>
+            function getTechnologiesProject($connection, $value) {    
+                echo '<td>';
+                for($i = 0; $i < strlen($value); $i++) {
+                    if ($value[$i] != " ") {
+                        $val = $connection->real_escape_string($value[$i]);
+                        $sql = "SELECT `name_technologies` FROM `technologiesproject` WHERE `id_technologies`  = " . $val;
+                        
+                        $result = mysqli_query($connection, $sql);
+                        $tech = mysqli_fetch_array($result);
+                        echo $tech[0];
+                        if ($i+2 < strlen($value)) {
+                            echo ", ";
+                        }
+                    }
+                }
+                echo '</td>';
+            }
+
+            ?>
+            
         </div>
     </div>
 </body>
