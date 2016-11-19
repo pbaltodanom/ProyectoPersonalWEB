@@ -85,7 +85,7 @@
     <div id="hmenu"> 
         <ul> 
             <li><a href="mainPage.php">NUEVOS PROYECTOS</a></li> 
-            <li><a href="editProjects.php">ACTUALIZAR PROYECTOS</a></li>
+            <li><a href="">ACTUALIZAR PROYECTOS</a></li>
             <li><a href="">ELIMINAR PROYECTO</a></li>
         </ul>   
     </div> 
