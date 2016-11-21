@@ -28,18 +28,42 @@ function showhide() {
 }
 
 //Function using ajax to recover the data from the db and display it in the select tag depending of the department the user choose
-function getId(val) {
+function getIdCourse(val) {
 	$.ajax({
 		type: "POST",
 		url: "getData.php",
-		data: "id_department="+val,
+		data: "id_department="+val,        
 		success: function(data){
 			$("#courseSelection").html(data);
 		}
 	});
 }
 
+function getIdProfessor() {
+    var x = document.getElementById("departmentSelection");
+    var val = x.options[x.selectedIndex].value;
+    $.ajax({
+        type: "POST",
+        url: "getDataTwo.php",
+        data: "id_department="+val,        
+        success: function(data){
+            $("#professorSelection").html(data);
+        }
+    });
+}
 
 setTimeout(function() {
     $('.success').fadeOut('slow');
+}, 1000); // <-- time in milliseconds
+setTimeout(function() {
+    $('.info').fadeOut('slow');
+}, 1000); // <-- time in milliseconds
+setTimeout(function() {
+    $('.warning').fadeOut('slow');
+}, 1000); // <-- time in milliseconds
+setTimeout(function() {
+    $('.error').fadeOut('slow');
+}, 1000); // <-- time in milliseconds
+setTimeout(function() {
+    $('.validation').fadeOut('slow');
 }, 1000); // <-- time in milliseconds

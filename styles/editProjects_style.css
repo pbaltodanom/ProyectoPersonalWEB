@@ -1,0 +1,22 @@
+#mainselection select {
+   border: 0;
+   color: #8c8c8c;
+   background: transparent;
+   font-size: 16px;
+   font-weight: bold;
+   padding: 2px 10px;
+   width: 378px;
+   background: #00428c
+   -webkit-appearance: none;
+}
+
+#mainselection {
+   overflow:hidden;
+   display: -webkit-inline-box;
+   width:350px;
+   -moz-border-radius: 9px 9px 9px 9px;
+   -webkit-border-radius: 9px 9px 9px 9px;
+   border-radius: 9px 9px 9px 9px;
+   box-shadow: 1px 1px 11px #ffffff;
+   background: #63c5a6 url("http://i62.tinypic.com/15xvbd5.png") no-repeat scroll 319px center;
+}

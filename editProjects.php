@@ -16,7 +16,9 @@
 <meta charset="utf-8">
 
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js"></script>
-<link rel = stylesheet href="styles/mainPage_style.css" type="text/css">
+<link rel = stylesheet href="styles/base_style.css" type="text/css">
+<link rel = stylesheet href="styles/editProjects_style.css" type="text/css">
+<script type="text/javascript" src="js/validations.js"></script>
 
 <html>
 <head>
@@ -28,22 +30,25 @@
         <input type="submit" name="logout" value="logout">
     </form>
     
-    <?php 
-        echo "<p align='center' class='round'>". $_SESSION['login_user'];
-    ?>
-    <br>
-    BACHILLER EN LA CARRERA DE INGENIERÍA EN COMPUTACIÓN-ITCR</p>
-
-    <h2 class="offscreen">NavigationBar</h2> 
-    <div id="hmenu"> 
+    <p align='center' class='round'>PÁGINA PERSONAL ADMINISTRADOR</p>
+    <div id="rectangle"></div>
+    <div id="menu"> 
         <ul> 
-            <li><a href="mainPage.php">NUEVOS PROYECTOS</a></li> 
-            <li><a href="">ACTUALIZAR PROYECTOS</a></li>
-            <li><a href="">ELIMINAR PROYECTO</a></li>
+            <li><a href="mainPage.php">PROYECTOS</a>
+                <ul class="hidden">
+                    <li><a href="createProjects.php">CREAR PROYECTO</a></li>
+                    <li><a href="editProjects.php">ACTUALIZAR PROYECTO</a></li>
+                    <li><a href="deleteProjects.php">ELIMINAR PROYECTO</a></li>
+                </ul>
+            </li>
+            <li><a href="interestsPage.php">INTERESES</a>
+            </li>
+            <li><a href="">CONTACTO</a>
+            </li>
         </ul>   
     </div> 
 
-    <br><br>
+    <br><br><br><br><br>
 
     <div class="boxed">
         <div class="transbox">
@@ -52,79 +57,80 @@
 
             <br><br>
 
-            <?php
-
-            $sql = "SELECT * FROM project";
-            $result = mysqli_query($connection, $sql);
-
-            if (mysqli_num_rows($result) > 0) {
-                echo '<table cellpadding="0" cellspacing="0" class="db-table">';
-                echo '<tr><th>ID</th><th>NOMBRE</th><th>RESUMEN</th><th>DESCRIPCIÓN</th><th>CURSO</th><th>TIPO DE PROYECTO</th><th>TECNOLOGÍAS USADAS</th><th>DURACIÓN</th><th>TAREAS / ROLES</th></tr>';
-                // output data of each row
-                while($row = mysqli_fetch_assoc($result)) {
-                    echo '<tr>';
-                    foreach($row as $key=>$value) {
-                        if ($key == "id_course") {
-                            getCourse($connection, $value);
-                        } else if ($key == "id_type") {
-                            getTypeProject($connection, $value);
-                        } else if ($key == "id_technologies") {
-                            getTechnologiesProject($connection, $value);
-                        } else {
-                            echo '<td>',$value,'</td>';
+            <div id="mainselection">
+                <select id="projectSelection" name="idProject">
+                <option value="" selected="true" disabled="disabled">Elija un proyecto</option> 
+                    <?php 
+                        $sql = "SELECT id_project, name_project FROM project";
+                        $result = mysqli_query($connection,$sql);
+                        while($row = mysqli_fetch_array($result, MYSQL_ASSOC)) {                                                 
+                           echo "<option value='".$row['id_project']."'>".$row['name_project']."</option>";
                         }
-                    }
-                    echo '</tr>';
-                }
-            } else {
-                echo "0 results";
-            }
+                    ?>
+                </select>
+            </div>
 
-            function getCourse($connection, $value) {
-                $sql = "SELECT name_course FROM `course` WHERE `id_course` = $value";                
-                $result = mysqli_query($connection, $sql);
+            <br><br><br>
 
-                while($row = mysqli_fetch_assoc($result)) {
-                    if (mysqli_num_rows($result) > 0) {
-                        foreach($row as $key=>$value) {
-                            echo '<td>',$value,'</td>';
+            <form name="NewProjectForm" method="post" display="none">
+                <div id="mainselection">
+                    <select id="courseSelection" name="idCourse" disabled>
+                    <option value="" selected="true" disabled="disabled">Elija un curso</option> 
+                    </select>
+                </div>
+                <br><br>
+                <script type="text/javascript" src="js/validations.js"></script>
+                
+                <br><br>
+                <font color="white">Nombre del proyecto:  </font>
+                <input type="text" name="pname" value="" disabled><br><br>
+
+                <font color="white">Resumen del proyecto:</font> <br><br>
+                <textarea rows="4" name="psummary" cols="50" placeholder="Resumen..." disabled></textarea> <br><br>
+
+                <font color="white">Descripción del proyecto:</font> <br><br>
+                <textarea rows="4" name="pdesc"cols="50" placeholder="Descripción..." disabled></textarea> <br><br>
+
+                <font color="white"><h2>Tipo de proyecto</h2></font>
+                <div id="mainselection">
+                <select id="typeProjectSelection" name="typeProject" disabled>
+                <option value="" selected="true" disabled="disabled">Elija un tipo de proyecto</option> 
+                    <?php 
+                        $sql = "SELECT id_type, name_type FROM typeproject";
+                        $result = mysqli_query($connection,$sql);
+                        while($row = mysqli_fetch_array($result, MYSQL_ASSOC)) {                                                 
+                           echo "<option value='".$row['id_type']."'>".$row['name_type']."</option>";
                         }
-                    }
-                }
-            }
+                    ?>
+                </select>
+                </div>
 
-            function getTypeProject($connection, $value) {                
-                $sql = "SELECT `name_type` FROM `typeproject` WHERE `id_type` = $value";                
-                $result = mysqli_query($connection, $sql);
+                 <br><br><br>
 
-                while($row = mysqli_fetch_assoc($result)) {
-                    if (mysqli_num_rows($result) > 0) {
-                        foreach($row as $key=>$value) {
-                            echo '<td>',$value,'</td>';
+                <div id="mainselection">
+                <select id="tecProjectSelection" name="tecProject" disabled multiple>
+                    <?php 
+                        $sql = "SELECT id_technologies, name_technologies FROM technologiesproject";
+                        $result = mysqli_query($connection,$sql);
+                        while($row = mysqli_fetch_array($result, MYSQL_ASSOC)) {                                                 
+                           echo "<option value='".$row['id_technologies']."'>".$row['name_technologies']."</option>";
                         }
-                    }
-                }
-            }
+                    ?>
+                </select>
+                </div>
 
-            function getTechnologiesProject($connection, $value) {    
-                echo '<td>';
-                for($i = 0; $i < strlen($value); $i++) {
-                    if ($value[$i] != " ") {
-                        $val = $connection->real_escape_string($value[$i]);
-                        $sql = "SELECT `name_technologies` FROM `technologiesproject` WHERE `id_technologies`  = " . $val;
-                        
-                        $result = mysqli_query($connection, $sql);
-                        $tech = mysqli_fetch_array($result);
-                        echo $tech[0];
-                        if ($i+2 < strlen($value)) {
-                            echo ", ";
-                        }
-                    }
-                }
-                echo '</td>';
-            }
+                <br><br><br>
 
-            ?>
+                <font color="white">Duración (en semanas) </font>
+                <input type="text" name="pduration" disabled> <br><br>
+
+                <font color="white">Tareas / Roles </font>
+                <input type="text" name="prole" disabled> <br><br><br>
+
+                <div class="myButton">
+                    <input type="submit" name="submit" style="background-color:transparent;" value="Añadir nuevo proyecto" disabled>
+                </div> <br><br><br><br>
+            </form>
             
         </div>
     </div>

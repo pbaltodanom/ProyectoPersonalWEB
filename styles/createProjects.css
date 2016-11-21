@@ -1,0 +1,47 @@
+#mainselection select {
+   border: 0;
+   color: #8c8c8c;
+   background: transparent;
+   font-size: 16px;
+   font-weight: bold;
+   padding: 2px 10px;
+   width: 378px;
+   background: #00428c
+   -webkit-appearance: none;
+}
+
+#mainselection {
+   overflow:hidden;
+   display: -webkit-inline-box;
+   width:350px;
+   -moz-border-radius: 9px 9px 9px 9px;
+   -webkit-border-radius: 9px 9px 9px 9px;
+   border-radius: 9px 9px 9px 9px;
+   box-shadow: 1px 1px 11px #ffffff;
+   background: #63c5a6 url("http://i62.tinypic.com/15xvbd5.png") no-repeat scroll 319px center;
+}
+
+#showform {
+  font-size: 14px;
+  font-weight: bold;
+  padding: 20px 70px;
+  width: 200px;
+  background: #78e2d7;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.radiobuttons label {
+  display: block;
+  float: left;
+  color: white;
+  padding-left: 70px;
+  padding-right: 30px;
+  white-space: nowrap;
+}
+.radiobuttons input {
+  vertical-align: middle;
+}
+.radiobuttons label span {
+  vertical-align: middle;
+}
